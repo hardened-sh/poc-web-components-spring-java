@@ -1,0 +1,37 @@
+:host {
+  --color-bg: #fafafa;
+  --color-bg-secondary: #fff;
+  --color-bg-tertiary: #f5f5f5;
+  --color-border: #e5e5e5;
+  --color-text: #242424;
+  --color-text-muted: #525252;
+  --color-text-dim: #6b6b6b;
+  --color-text-faint: #8f8f8f;
+  --color-text-subtle: #b3b3b3;
+  --color-accent: #00d93a;
+  --color-accent-hover: #00c033;
+  --color-accent-dim: rgba(0,217,58,.6);
+  --color-accent-subtle: rgba(0,217,58,.1);
+  --color-accent-glow: rgba(0,217,58,.15);
+  --color-danger: #dc2626;
+  --color-danger-dim: rgba(220,38,38,.3);
+  --color-danger-subtle: rgba(220,38,38,.1);
+  --color-warning: #d97706;
+  --color-warning-dim: rgba(217,119,6,.3);
+  --color-warning-subtle: rgba(217,119,6,.1);
+  --color-error: #dc2626;
+  --color-error-dim: rgba(220,38,38,.3);
+  --color-error-subtle: rgba(220,38,38,.1);
+  --color-success: #00d93a;
+  --color-success-dim: rgba(0,217,58,.3);
+  --color-success-subtle: rgba(0,217,58,.1);
+  --color-dot-red: #ff5f56;
+  --color-dot-yellow: #ffbd2e;
+  --color-dot-green: #27c93f;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: block;
+}

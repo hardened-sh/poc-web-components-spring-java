@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${'Produto: ' + produto.nome}">Produto</title>
+    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/assets/legado-bundle.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .legacy-badge {
+            background: #6c757d;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .sidebar-widget {
+            position: sticky;
+            top: 20px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e9ecef;
+            font-size: 0.95rem;
+        }
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        .spec-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .spec-value {
+            font-weight: 600;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-3">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="/">
+                            <strong>Sistema Legado</strong>
+                        </a>
+                        <span class="legacy-badge">Spring Boot + Thymeleaf</span>
+                        <div class="ms-auto">
+                            <a href="/checkout" class="btn btn-sm btn-primary">
+                                <i class="bi bi-cart4 me-1"></i>Ver Checkout (React Puro)
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        
+
+        <div id="react-feedback" class="alert alert-info d-none" role="alert">
+             <h5 class="alert-heading"><i class="bi bi-arrow-left-right me-2"></i>Dados recebidos do React (Bidirecional)!</h5>
+             <hr>
+             <p class="mb-0">
+                 Preço Final Calculado: <strong id="live-final-price">R$ 0,00</strong><br>
+                 <small class="text-muted">Evento disparado via CustomEvent e capturado pelo JavaScript legado.</small>
+             </p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="product-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h1 th:text="${produto.nome}">Nome do Produto</h1>
+                        <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i>Em Estoque</span>
+                    </div>
+                    
+                    <div class="mb-4 overflow-hidden rounded-3 shadow-sm" style="height: 400px;">
+                        <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=800&q=80" 
+                             alt="Notebook Dell Inspiron" 
+                             class="w-100 h-100"
+                             style="object-fit: cover;">
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-12 mb-3">
+                             <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border">
+                                <div>
+                                    <small class="text-uppercase text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">Preço Base</small>
+                                    <div class="d-flex align-items-baseline mt-1">
+                                        <span class="text-muted me-1 fs-5">R$</span>
+                                        <h2 class="display-6 fw-bold text-dark mb-0" th:text="${#numbers.formatDecimal(produto.precoBase, 1, 2)}">0.00</h2>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted d-block mb-1">SKU / Código</small>
+                                    <span class="badge bg-white text-secondary border px-3 py-2 font-monospace shadow-sm" 
+                                          style="font-size: 0.9rem; letter-spacing: 1px;"
+                                          th:text="${'#' + produto.id}">
+                                        #000
+                                    </span>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4 ps-1">
+                        <h6 class="fw-bold mb-2 text-dark">
+                            <i class="bi bi-text-paragraph me-2 text-primary"></i>Sobre este item
+                        </h6>
+                        <p class="text-secondary lh-lg mb-0" style="font-size: 1.05rem;" th:text="${produto.descricao}">
+                            Descrição do produto
+                        </p>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <strong><i class="bi bi-info-circle-fill me-2"></i>Informação Fiscal:</strong> 
+                        Este produto está sujeito à alíquota de 
+                        <strong th:text="${regraFiscal.nome}">-</strong> 
+                        de <strong th:text="${regraFiscal.aliquota + '%'}">-</strong>.
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="mb-3">Ações</h5>
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button class="btn btn-primary btn-lg" type="button">
+                            <i class="bi bi-cart-plus me-2"></i>Adicionar ao Carrinho
+                        </button>
+                        <button class="btn btn-outline-secondary btn-lg" type="button">
+                            <i class="bi bi-heart me-2"></i>Favoritar
+                        </button>
+                    </div>
+                </div>
+                
+
+                <div class="card border-0 shadow-sm mt-4" style="border-radius: 12px; overflow: hidden; background-color: #fcfcfc;">
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold text-dark mb-4">
+                            <i class="bi bi-stars me-2 text-warning"></i>Vantagens Exclusivas
+                        </h5>
+                        
+                        <div class="d-flex flex-column gap-3">
+
+                            <div class="d-flex align-items-center bg-white p-3 rounded border shadow-sm">
+                                <div class="rounded-circle bg-success-subtle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                    <i class="bi bi-truck text-success fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">Frete Grátis</h6>
+                                    <small class="text-muted">Despacho imediato para todo Brasil</small>
+                                </div>
+                            </div>
+                            
+
+                            <div class="d-flex align-items-center bg-white p-3 rounded border shadow-sm">
+                                <div class="rounded-circle bg-primary-subtle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                    <i class="bi bi-shield-check text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">Garantia Total</h6>
+                                    <small class="text-muted">12 meses contra defeitos de fábrica</small>
+                                </div>
+                            </div>
+
+
+                            <div class="d-flex align-items-center bg-white p-3 rounded border shadow-sm">
+                                <div class="rounded-circle bg-danger-subtle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                    <i class="bi bi-arrow-repeat text-danger fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">Troca Flexível</h6>
+                                    <small class="text-muted">Até 30 dias ou reembolso direto</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3 text-center opacity-75">
+                            <small class="text-muted fst-italic" style="font-size: 0.75rem;">
+                                * Componente renderizado via Thymeleaf (Server-Side)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="col-lg-4">
+                <div class="sidebar-widget">
+
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">
+                                <i class="bi bi-clipboard-data me-2"></i>Cotação Rápida
+                            </h5>
+                            <p class="text-muted small mb-3">
+                                <strong>Web Component interativo</strong> com gerenciamento 
+                                de estado React.
+                            </p>
+                            
+                            <quote-widget 
+                                th:attr="product-name=${produto.nome}, base-price=${produto.precoBase}">
+                            </quote-widget>
+                        </div>
+                    </div>
+                    
+
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">
+                                <i class="bi bi-calculator me-2"></i>Calculadora de Impostos
+                            </h5>
+                            <p class="text-muted small mb-3">
+                                Este é um <strong>Web Component React</strong> integrado 
+                                no template Thymeleaf legado.
+                            </p>
+                            
+                            <tax-widget 
+                                th:attr="value=${produto.precoBase}, rate=${regraFiscal.aliquota}">
+                            </tax-widget>
+                            
+                            <div class="alert alert-success mt-3 small mb-0">
+                                <strong>Tecnologia:</strong> Este componente usa 
+                                React + Shadow DOM para isolamento completo de estilos.
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                             <h5 class="card-title fw-bold text-dark mb-0">
+                                <i class="bi bi-cpu-fill me-2 text-primary"></i>Especificações Técnicas
+                            </h5>
+                        </div>
+                        <div class="card-body px-4 pb-4">
+                            <div class="alert alert-light border mb-4 py-2 px-3">
+                                <small class="text-muted d-block text-center">
+                                    <em>Este card é <strong>HTML puro do Thymeleaf</strong><br>(Zero React)</em>
+                                </small>
+                            </div>
+
+                            <div class="specs-list">
+                                <div class="spec-item">
+                                    <span class="spec-label">Marca</span>
+                                    <span class="spec-value">Dell</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Modelo</span>
+                                    <span class="spec-value">Inspiron 15</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Processador</span>
+                                    <span class="spec-value text-primary">Intel Core i7</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Memória</span>
+                                    <span class="spec-value">16GB DDR4</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Armazenamento</span>
+                                    <span class="spec-value">512GB NVMe SSD</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 text-center">
+                                <a href="#" class="btn btn-outline-dark btn-sm w-100 rounded-pill">Ver ficha completa</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-5 pt-5 pb-5 text-center">
+            <div class="border-top pt-4">
+                <div class="d-inline-block">
+                    <span class="badge bg-light text-dark border rounded-pill py-2 px-4 shadow-sm fw-normal">
+                        <i class="bi bi-shield-lock-fill me-2 text-success"></i>
+                        Hardened <span class="mx-2 text-muted">|</span> by Luan Rodrigues
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/assets/legado-bundle.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            document.body.addEventListener('tax-calculated', (e) => {
+                console.log('Evento recebido do React:', e.detail);
+                
+                const feedbackArea = document.getElementById('react-feedback');
+                const livePriceSpan = document.getElementById('live-final-price');
+
+                if (feedbackArea && livePriceSpan) {
+                    feedbackArea.classList.remove('d-none');
+                    const price = parseFloat(e.detail.finalPrice);
+                    livePriceSpan.textContent = price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                }
+            });
+
+            $('.btn-primary').on('click', function() {
+                alert('Funcionalidade legada jQuery funcionando! 🎉');
+            });
+        });
+    </script>
+</body>
+</html>
